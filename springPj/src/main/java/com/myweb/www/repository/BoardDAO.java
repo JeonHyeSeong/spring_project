@@ -23,4 +23,6 @@ public interface BoardDAO {
 
 	int getTotalCount(PagingVO pgvo);
 
+	void commentCount();
+
 }

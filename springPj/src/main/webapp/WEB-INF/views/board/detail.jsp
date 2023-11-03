@@ -14,6 +14,27 @@
 		width: 600px;
 		margin-top: 25px; 
 	}
+	.cmtContainer{
+		width: 500px;
+		position: relative;
+		left: 310px;
+	}
+	.btnContainer{
+		display: flex;
+		justify-content: center;
+	}
+	.btn-outline-warning, .btn-outline-danger{
+		margin-left: 20px;
+		margin-right: 20px;
+	}
+	.text-center{
+		width: 500px;
+		position: relative;
+		left: 310px;
+	}
+	.cmtBox{
+		margin-bottom: 10px;
+	}
 </style>
 </head>
 <body>
@@ -61,9 +82,35 @@
 		</div>
 	</div>
 	
+	<!-- 댓글 등록 -->
+	<div class="cmtContainer">
+		<div class="input-group mb-3">
+			<span class="input-group-text" id="cmtWriter">${bvo.writer }</span>
+			<input type="text" class="form-control" id="cmtText" placeholder="Test Comment...">
+			<button type="button" class="btn btn-success" id="cmtPostBtn">등록</button>
+		</div>
+	</div>
+	
+	<!-- 댓글 표시 -->
+	<div id="cmtListArea">
+	
+	</div>
+	
+	
 	
 	<script type="text/javascript">
-		let isMod = <c:out value="${isMod}" />;
+		const bnoVal = `<c:out value="${bvo.bno}" />`;
+		console.log(bnoVal);
+	</script>
+	
+	<script type="text/javascript" src="/resources/js/boardComment.js"></script>
+	
+	<script type="text/javascript">
+	CommentList(bnoVal);
+	</script>
+	
+	<script type="text/javascript">
+		const isMod = <c:out value="${isMod}" />;
 		if(parseInt(isMod)){
 			alert('게시글 수정 성공!!');
 		}else{

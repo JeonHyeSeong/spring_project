@@ -40,7 +40,7 @@ public class BoardController {
 	
 	@GetMapping("/list")
 	public String getList(Model model, PagingVO pgvo) {
-		log.info("pgvo : {}",pgvo);
+//		log.info("pgvo : {}",pgvo);
 		List<BoardVO> list = bsv.getList(pgvo);
 		model.addAttribute("list",list);
 		

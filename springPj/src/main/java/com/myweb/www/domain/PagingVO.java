@@ -25,4 +25,8 @@ public class PagingVO {
 	public int getPageStart() {
 		return (this.pageNo - 1) * qty;
 	}
+	
+	public String[] getTypeToArray() {
+		return this.type == null ? new String[] {} : this.type.split("");
+	}
 }

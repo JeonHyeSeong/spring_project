@@ -10,3 +10,24 @@ read_count int default 0,
 cmt_count int default 0,
 file_count int default 0,
 primary key(bno));
+
+-- comment table 생성
+create table comment(
+cno bigint auto_increment not null,
+bno bigint not null,
+writer varchar(200) not null,
+content text not null,
+reg_date datetime default now(),
+mod_date datetime default now(),
+primary key(cno));
+
+-- file table 생성
+create table file(
+uuid varchar(256) not null,
+save_dir varchar(256) not null,
+file_name varchar(256) not null,
+file_type tinyint(1) default 0,
+bno bigint,
+file_size bigint,
+reg_date datetime default now(),
+primary key(uuid));

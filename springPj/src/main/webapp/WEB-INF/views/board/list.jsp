@@ -14,7 +14,7 @@
 		width: 700px;
 		margin-top: 25px;
 	}
-	.nav{
+	.nav, .con{
 		display: flex;
 		justify-content: center;
 	}
@@ -26,6 +26,39 @@
 
 	
 	<h2>Board List Page</h2>
+	
+	<!-- 검색 -->
+	<div class="container-fluid con">
+		<form action="/board/list" method="get" class="d-flex">
+			<c:set value="${ph.pgvo.type }" var="typed"></c:set>
+			<div class="selContainer">
+				<select name="type" class="form-select sel">
+					<option ${typed == null? 'selected' : ''}>Choose</option>
+					<option value="t" ${typed eq 't'? 'selected' : ''}>Title</option>
+					<option value="w" ${typed eq 'w'? 'selected' : ''}>Writer</option>
+					<option value="c" ${typed eq 'c'? 'selected' : ''}>Content</option>
+					<option value="tw" ${typed eq 'tw'? 'selected' : ''}>Title+Writer</option>
+					<option value="tc" ${typed eq 'tc'? 'selected' : ''}>Title+Content</option>
+					<option value="wc" ${typed eq 'wc'? 'selected' : ''}>Writer+Content</option>
+					<option value="twc" ${typed eq 'twc'? 'selected' : ''}>Title+Writer+Content</option>
+				</select>
+			</div>
+			<div class="inputContainer">
+				<input type="text" class="form-control me-2 search" name="keyword" value="${ph.pgvo.keyword }" placeholder="검색어를 입력하세요..">
+				<input type="hidden" name="pageNo" value="1">
+				<input type="hidden" name="qty" value="${ph.pgvo.qty }">
+			</div>
+			<div class="btnContainer">
+				<button type="submit" class="btn btn-primary position-relative sbtn">
+				Search
+				<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+	   				 ${ph.totalCount }
+	    			<span class="visually-hidden">unread messages</span>
+	  			</span>
+				</button>
+			</div>
+		</form>
+	</div>
 	
 	<div class="container">
 		<table class="table table-info table-striped">
@@ -60,7 +93,7 @@
 	<nav aria-label="Page navigation example" class="nav">
 		<ul class="pagination">
 			<li class="page-item ${(ph.prev eq false) ? 'disabled' : '' }">
-				<a class="page-link" href="/board/list?pageNo=${ph.startPage-1}&qty=${ph.pgvo.qty}">Previous</a>
+				<a class="page-link" href="/board/list?pageNo=${ph.startPage-1}&qty=${ph.pgvo.qty}&type=${ph.pgvo.type}&keyword=${ph.pgvo.keyword}">Previous</a>
 			</li>
 			<c:forEach begin="${ph.startPage }" end="${ph.endPage }" var="i">
 				   <li class="page-item">
@@ -68,7 +101,7 @@
 				   </li>
 			</c:forEach>
 			<li class="page-item ${(ph.next eq false) ? 'disabled' : '' }">
-				<a class="page-link" href="/board/list?pageNo=${ph.endPage+1}&qty=${ph.pgvo.qty}">Next</a>
+				<a class="page-link" href="/board/list?pageNo=${ph.endPage+1}&qty=${ph.pgvo.qty}&type=${ph.pgvo.type}&keyword=${ph.pgvo.keyword}">Next</a>
 			</li>
   		</ul>
 	</nav>
