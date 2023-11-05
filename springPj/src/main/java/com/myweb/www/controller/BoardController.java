@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.myweb.www.domain.BoardDTO;
 import com.myweb.www.domain.BoardVO;
+import com.myweb.www.domain.FileVO;
 import com.myweb.www.domain.PagingVO;
+import com.myweb.www.handler.FileHandler;
 import com.myweb.www.handler.PagingHandler;
 import com.myweb.www.service.BoardService;
 
@@ -26,16 +30,25 @@ public class BoardController {
 	
 	private final BoardService bsv;
 	
+	private final FileHandler fh;
+	
 	@GetMapping("/register")
 	public void registerGet() {}
 	
 	@PostMapping("/register")
-	public String registerPost(BoardVO bvo,RedirectAttributes re) {
+	public String registerPost(BoardVO bvo,RedirectAttributes re,
+			@RequestParam(name="files", required = false)MultipartFile[] files) {
 		log.info("bvo : {}",bvo);
-		int isOk = bsv.register(bvo);
+		List<FileVO> flist = null;
+		// file upload handler 생성
+		if(files[0].getSize() > 0) {
+			flist = fh.uploadFiles(files);
+		}
+		
+		int isOk = bsv.insert(new BoardDTO(bvo, flist));
 		log.info(">>> board register "+(isOk > 0? "OK" : "Fail"));
-		re.addFlashAttribute("isOk", isOk);
 		return "redirect:/board/list";
+
 	}
 	
 	@GetMapping("/list")
@@ -52,14 +65,19 @@ public class BoardController {
 	
 	@GetMapping({"/detail","/modify"})
 	public void getDetail(@RequestParam("bno") long bno, Model model) {
-		BoardVO bvo = bsv.getDetail(bno);
-		model.addAttribute("bvo", bvo);
+//		BoardVO bvo = bsv.getDetail(bno);
+		BoardDTO bdto = bsv.getDetailFile(bno);
+		
+		model.addAttribute("bvo", bdto.getBvo());
+		model.addAttribute("BoardDTO", bdto);
 	}
 	
 	@GetMapping("/cntDetail")
 	public String cntDetail(@RequestParam("bno") long bno, Model model) {
-		BoardVO bvo = bsv.cntDetail(bno);
-		model.addAttribute("bvo", bvo);
+//		BoardVO bvo = bsv.cntDetail(bno);
+		BoardDTO bdto = bsv.cntDetailFile(bno);
+		model.addAttribute("bvo", bdto.getBvo());
+		model.addAttribute("BoardDTO", bdto);
 		return "/board/detail";
 	}
 	

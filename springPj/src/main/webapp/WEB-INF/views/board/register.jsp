@@ -27,7 +27,7 @@
 
 	<h2>Board Register Page</h2>
 	
-	<form action="/board/register" method="post">
+	<form action="/board/register" method="post" enctype="multipart/form-data">
 		<div class="container">
 			<div class="input-group mb-3">
 			  <span class="input-group-text" id="basic-addon1">Title</span>
@@ -40,6 +40,14 @@
 			<div class="input-group">
 			  <span class="input-group-text">Content</span>
 			  <textarea class="form-control" name="content"></textarea>
+			</div>
+			<div class="mb-3">
+		  		<input type="file" class="form-control" name="files" id="files" style="display: none;" multiple="multiple">
+		  		<!-- input button trigger 용도의 button -->
+		  		<button type="button" id="trigger" class="btn btn-outline-primary">File Upload</button>
+			</div>
+			<div class="mb-3" id="fileZone">
+				<!-- 첨부파일 표시될 영역 -->
 			</div>
 			<button type="submit" class="btn btn-outline-primary rBtn" id="regBtn">등록</button>
 		</div>

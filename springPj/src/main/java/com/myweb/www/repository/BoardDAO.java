@@ -25,4 +25,6 @@ public interface BoardDAO {
 
 	void commentCount();
 
+	long selectOneBno();
+
 }

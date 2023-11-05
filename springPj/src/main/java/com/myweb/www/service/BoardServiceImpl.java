@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.myweb.www.domain.BoardDTO;
 import com.myweb.www.domain.BoardVO;
+import com.myweb.www.domain.FileVO;
 import com.myweb.www.domain.PagingVO;
 import com.myweb.www.repository.BoardDAO;
+import com.myweb.www.repository.FileDAO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardServiceImpl implements BoardService{
 	
 	private final BoardDAO bdao;
+	
+	private final FileDAO fdao;
 
-	@Override
-	public int register(BoardVO bvo) {
-		log.info("board register check");
-		return bdao.insert(bvo);
-	}
+//	@Override
+//	public int register(BoardVO bvo) {
+//		log.info("board register check");
+//		return bdao.insert(bvo);
+//	}
 
 	@Override
 	public List<BoardVO> getList(PagingVO pgvo) {
@@ -58,5 +63,43 @@ public class BoardServiceImpl implements BoardService{
 	public int getTotalCount(PagingVO pgvo) {
 		
 		return bdao.getTotalCount(pgvo);
+	}
+
+	@Override
+	public int insert(BoardDTO bdto) {
+		log.info("board register check");
+		int isUp = bdao.insert(bdto.getBvo());
+		
+		if(bdto.getFlist() == null) {
+			return isUp;
+		}
+		
+		
+		if(isUp > 0 && bdto.getFlist().size() > 0) {
+			long bno = bdao.selectOneBno();
+			// 모든 파일에 bno set
+			for(FileVO fvo : bdto.getFlist()) {
+				fvo.setBno(bno);
+				isUp *= fdao.insertFile(fvo);
+			}
+		}
+		return isUp;
+	}
+
+	@Override
+	public BoardDTO getDetailFile(long bno) {
+		BoardDTO bdto = new BoardDTO();
+		bdto.setBvo(bdao.getDetail(bno));
+		bdto.setFlist(fdao.DetailFile(bno));
+		return bdto;
+	}
+
+	@Override
+	public BoardDTO cntDetailFile(long bno) {
+		bdao.readCount(bno);
+		BoardDTO bdto = new BoardDTO();
+		bdto.setBvo(bdao.cntDetail(bno));
+		bdto.setFlist(fdao.cntDetailFile(bno));
+		return bdto;
 	}
 }
