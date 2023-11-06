@@ -70,7 +70,7 @@ function CommentList(bno) {
                     str += `${cvo.writer}</div>`;
                     str += `<div class="card-body">`;
                     str += `<p class="card-text">${cvo.content}</p>`;
-                    str += `<input type="text" class="form-control" id="cmtTextMod${cnt}"><br>`;
+                    str += `<input type="text" class="form-control" id="cmtTextMod${cnt}" data-writer=${cvo.writer}><br>`;
                     str += `<button type="button" class="btn btn-outline-warning modBtn" data-cnt=${cnt} data-cno=${cvo.cno}>Mod</button>`;
                     str += `<button type="button" class="btn btn-outline-danger delBtn" data-cno=${cvo.cno}>Del</button>`;
                     str += `</div>`;
@@ -103,7 +103,7 @@ async function editComment(cmtDataMod) {
 
 async function removeComment(cno) {
      try {
-          const url = "/comment/" + cno;
+          const url = "/comment/" + cno + "/" + writer;
           const config = {
                method: "delete"
           };
@@ -118,10 +118,10 @@ async function removeComment(cno) {
 document.addEventListener('click', (e) => {
      if (e.target.classList.contains('modBtn')) {
           let cnt = e.target.dataset.cnt;
-
           let cmtDataMod = {
                cno: e.target.dataset.cno,
-               content: document.getElementById(`cmtTextMod${cnt}`).value
+               content: document.getElementById(`cmtTextMod${cnt}`).value,
+               writer: e.target.dataset.writer
           };
           console.log(cmtDataMod);
           editComment(cmtDataMod).then(result => {
@@ -134,6 +134,7 @@ document.addEventListener('click', (e) => {
           })
      } else if (e.target.classList.contains('delBtn')) {
           let cnoVal = e.target.dataset.cno;
+          let writer = e.target.dataset.writer;
           console.log(cnoVal);
           removeComment(cnoVal).then(result => {
                if (result == 1) {

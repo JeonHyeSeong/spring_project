@@ -15,4 +15,12 @@
 	<select id="cntDetailFile" resultType="com.myweb.www.domain.FileVO">
 		select * from file where bno = #{bno} order by reg_date desc
 	</select>
+	
+	<delete id="removeFile">
+		delete from file where uuid = #{uuid}
+	</delete>
+	
+	<select id="selectListAllFile" resultType="com.myweb.www.domain.FileVO">
+		select * from file
+	</select>
 </mapper>

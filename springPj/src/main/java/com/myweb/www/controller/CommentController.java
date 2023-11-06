@@ -51,9 +51,10 @@ public class CommentController {
 				: new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@DeleteMapping(value = "/{cno}", produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> commentRemove(@PathVariable("cno") long cno){
+	@DeleteMapping(value = "/{cno}/{writer}", produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> commentRemove(@PathVariable("cno") long cno, @PathVariable("writer") String writer){
 		log.info("cno : {}",cno);
+		log.info("writer : {}",writer);
 		int isOk = csv.remove(cno);
 		return isOk > 0? new ResponseEntity<String>("1", HttpStatus.OK)
 				: new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);

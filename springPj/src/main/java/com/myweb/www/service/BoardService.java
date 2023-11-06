@@ -28,4 +28,8 @@ public interface BoardService {
 
 	BoardDTO cntDetailFile(long bno);
 
+	int removeFile(String uuid);
+
+	int modify(BoardDTO boardDTO);
+
 }

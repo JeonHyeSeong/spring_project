@@ -2,9 +2,14 @@ package com.myweb.www.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -82,9 +87,14 @@ public class BoardController {
 	}
 	
 	@PostMapping("/modify")
-	public String modify(BoardVO bvo, RedirectAttributes re) {
+	public String modify(BoardVO bvo, RedirectAttributes re,
+			@RequestParam(name="files", required = false)MultipartFile[] files) {
 		log.info("bvo : {}",bvo);
-		int isMod = bsv.modify(bvo);
+		List<FileVO> flist = null;
+		if(files[0].getSize() > 0) {
+			flist = fh.uploadFiles(files);
+		}
+		int isMod = bsv.modify(new BoardDTO(bvo, flist));
 		log.info(">>> board modify "+(isMod > 0? "OK" : "Fail"));
 		re.addAttribute("bno", bvo.getBno());
 		re.addFlashAttribute("isMod", isMod);
@@ -97,5 +107,12 @@ public class BoardController {
 		log.info(">>> board remove "+(isDel > 0? "OK" : "Fail"));
 		re.addFlashAttribute("isDel", isDel);
 		return "redirect:/board/list";
+	}
+	
+	@DeleteMapping(value = "/file/{uuid}", produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> removeFile(@PathVariable("uuid") String uuid) {
+		int isOk = bsv.removeFile(uuid);
+		return isOk > 0? new ResponseEntity<String>("1", HttpStatus.OK)
+				: new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

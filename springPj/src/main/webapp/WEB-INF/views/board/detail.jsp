@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -94,7 +95,7 @@
 						</c:choose>
 						<div>
 							<div class="fw-bold">${fvo.fileName }</div>
-							<span class="badge rounded-pill text-bg-info">${fvo.regAt }</span>
+							<span class="badge rounded-pill text-bg-info">${fvo.regDate }</span>
 						</div>
 					</li>
 				</c:forEach>
@@ -109,11 +110,14 @@
 	
 	<!-- 댓글 등록 -->
 	<div class="cmtContainer">
-		<div class="input-group mb-3">
-			<span class="input-group-text" id="cmtWriter">${bvo.writer }</span>
-			<input type="text" class="form-control" id="cmtText" placeholder="Test Comment...">
-			<button type="button" class="btn btn-success" id="cmtPostBtn">등록</button>
-		</div>
+		<sec:authorize access="isAuthenticated()">
+			<sec:authentication property="principal.mvo.email" var="authEmail"/>
+			<div class="input-group mb-3">
+				<span class="input-group-text" id="cmtWriter">${authEmail }</span>
+				<input type="text" class="form-control" id="cmtText" placeholder="Test Comment...">
+				<button type="button" class="btn btn-success" id="cmtPostBtn">등록</button>
+			</div>
+		</sec:authorize>
 	</div>
 	
 	<!-- 댓글 표시 -->

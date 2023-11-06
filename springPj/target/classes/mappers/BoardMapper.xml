@@ -23,6 +23,10 @@
 		update board b set cmt_count = (select count(cno) from comment where bno = b.bno)
 	</update>
 	
+	<update id="fileCount">
+		update board b set file_count = (select count(bno) from file where bno = b.bno)
+	</update>
+	
 	<select id="getTotalCount" resultType="int">
 		select count(bno) from board
 		<include refid="search"></include>

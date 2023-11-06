@@ -53,6 +53,7 @@
 		</div>
 	</form>
 	
+	<script type="text/javascript" src="/resources/js/boardRegister.js"></script>
 	
 	<jsp:include page="../common/footer.jsp" />
 </body>

@@ -3,6 +3,7 @@ package com.myweb.www.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.myweb.www.domain.BoardDTO;
 import com.myweb.www.domain.BoardVO;
@@ -29,9 +30,11 @@ public class BoardServiceImpl implements BoardService{
 //		return bdao.insert(bvo);
 //	}
 
+	@Transactional
 	@Override
 	public List<BoardVO> getList(PagingVO pgvo) {
 		bdao.commentCount();
+		bdao.fileCount();
 		return bdao.getList(pgvo);
 	}
 
@@ -41,6 +44,7 @@ public class BoardServiceImpl implements BoardService{
 		return bdao.getDetail(bno);
 	}
 
+	@Transactional
 	@Override
 	public BoardVO cntDetail(long bno) {
 		bdao.readCount(bno);
@@ -65,6 +69,7 @@ public class BoardServiceImpl implements BoardService{
 		return bdao.getTotalCount(pgvo);
 	}
 
+	@Transactional
 	@Override
 	public int insert(BoardDTO bdto) {
 		log.info("board register check");
@@ -86,6 +91,7 @@ public class BoardServiceImpl implements BoardService{
 		return isUp;
 	}
 
+	@Transactional
 	@Override
 	public BoardDTO getDetailFile(long bno) {
 		BoardDTO bdto = new BoardDTO();
@@ -94,6 +100,7 @@ public class BoardServiceImpl implements BoardService{
 		return bdto;
 	}
 
+	@Transactional
 	@Override
 	public BoardDTO cntDetailFile(long bno) {
 		bdao.readCount(bno);
@@ -101,5 +108,31 @@ public class BoardServiceImpl implements BoardService{
 		bdto.setBvo(bdao.cntDetail(bno));
 		bdto.setFlist(fdao.cntDetailFile(bno));
 		return bdto;
+	}
+
+	@Override
+	public int removeFile(String uuid) {
+		
+		return fdao.removeFile(uuid);
+	}
+
+	@Transactional
+	@Override
+	public int modify(BoardDTO bdto) {
+		int isOk = bdao.update(bdto.getBvo());
+		
+		if(bdto.getFlist() == null) {
+			return isOk;
+		}
+		
+		if(isOk > 0 && bdto.getFlist().size() > 0) {
+			long bno = bdao.selectOneBno();
+			for(FileVO fvo : bdto.getFlist()) {
+				fvo.setBno(bno);
+				isOk *= fdao.insertFile(fvo);
+			}
+		}
+		
+		return isOk;
 	}
 }
