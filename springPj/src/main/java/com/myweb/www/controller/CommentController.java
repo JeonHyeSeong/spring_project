@@ -1,5 +1,6 @@
 package com.myweb.www.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -46,23 +47,28 @@ public class CommentController {
 	@PutMapping(value = "/{cno}", consumes = "application/json", produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> commentEdit(@RequestBody CommentVO cvo, Principal principal){
 		log.info("cvo : {}",cvo);
-		if (principal != null && principal.getName().equals(cvo.getWriter())){
+		if(principal.getName().equals(cvo.getWriter())) {
 			int isOk = csv.edit(cvo);
 			return isOk > 0? new ResponseEntity<String>("1",HttpStatus.OK)
-				: new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
+					: new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+		return new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@DeleteMapping(value = "/{cno}/{writer}", produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> commentRemove(@PathVariable("cno") long cno, @PathVariable("writer") String writer, Principal principal){
+	public ResponseEntity<String> commentRemove(@PathVariable("cno") long cno, @PathVariable("writer") String writer,
+			Principal principal){
 		log.info("cno : {}",cno);
 		log.info("writer : {}",writer);
-		if (principal != null && principal.getName().equals(writer)){
+		log.info("principal : {}",principal.getName());
+		
+		if(principal.getName().equals(writer)) {
 			int isOk = csv.remove(cno);
-			return isOk > 0? new ResponseEntity<String>("1", HttpStatus.OK)
-				: new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
+			return isOk > 0? new ResponseEntity<String>("1", HttpStatus.OK) :
+				new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		
+		return new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
 		
 	}
 	

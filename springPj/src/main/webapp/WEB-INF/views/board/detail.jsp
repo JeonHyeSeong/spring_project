@@ -101,10 +101,12 @@
 				</c:forEach>
 			</ul>
 		</div>
-		
 		<div class="btnContainer">
-			<a href="/board/modify?bno=${bvo.bno }"><button type="button" class="btn btn-outline-warning">수정</button></a>
-			<a href="/board/remove?bno=${bvo.bno }"><button type="button" class="btn btn-outline-danger">삭제</button></a>
+			<sec:authentication property="principal.mvo.email" var="authEmail"/>
+			<c:if test="${authEmail eq bvo.writer }">
+				<a href="/board/modify?bno=${bvo.bno }"><button type="button" class="btn btn-outline-warning">수정</button></a>
+				<a href="/board/remove?bno=${bvo.bno }"><button type="button" class="btn btn-outline-danger">삭제</button></a>
+			</c:if>
 		</div>
 	</div>
 	

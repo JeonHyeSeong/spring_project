@@ -70,9 +70,9 @@ function CommentList(bno) {
                     str += `${cvo.writer}</div>`;
                     str += `<div class="card-body">`;
                     str += `<p class="card-text">${cvo.content}</p>`;
-                    str += `<input type="text" class="form-control" id="cmtTextMod${cnt}" data-writer=${cvo.writer}><br>`;
-                    str += `<button type="button" class="btn btn-outline-warning modBtn" data-cnt=${cnt} data-cno=${cvo.cno}>Mod</button>`;
-                    str += `<button type="button" class="btn btn-outline-danger delBtn" data-cno=${cvo.cno}>Del</button>`;
+                    str += `<input type="text" class="form-control" id="cmtTextMod${cnt}"><br>`;
+                    str += `<button type="button" class="btn btn-outline-warning modBtn" data-cnt=${cnt} data-writer=${cvo.writer} data-cno=${cvo.cno}>Mod</button>`;
+                    str += `<button type="button" class="btn btn-outline-danger delBtn" data-writer=${cvo.writer} data-cno=${cvo.cno}>Del</button>`;
                     str += `</div>`;
                     str += `<div class="card-footer text-body-secondary">`;
                     str += `<span class="badge rounded-pill text-bg-info">${cvo.modDate}</span>`;
@@ -101,7 +101,7 @@ async function editComment(cmtDataMod) {
      }
 }
 
-async function removeComment(cno) {
+async function removeComment(cno, writer) {
      try {
           const url = "/comment/" + cno + "/" + writer;
           const config = {
@@ -136,7 +136,8 @@ document.addEventListener('click', (e) => {
           let cnoVal = e.target.dataset.cno;
           let writer = e.target.dataset.writer;
           console.log(cnoVal);
-          removeComment(cnoVal).then(result => {
+          console.log(writer);
+          removeComment(cnoVal, writer).then(result => {
                if (result == 1) {
                     alert('댓글 삭제 성공!!');
                     location.reload();
