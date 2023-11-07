@@ -44,20 +44,26 @@ public class CommentController {
 	}
 	
 	@PutMapping(value = "/{cno}", consumes = "application/json", produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> commentEdit(@RequestBody CommentVO cvo){
+	public ResponseEntity<String> commentEdit(@RequestBody CommentVO cvo, Principal principal){
 		log.info("cvo : {}",cvo);
-		int isOk = csv.edit(cvo);
-		return isOk > 0? new ResponseEntity<String>("1",HttpStatus.OK)
+		if (principal != null && principal.getName().equals(cvo.getWriter())){
+			int isOk = csv.edit(cvo);
+			return isOk > 0? new ResponseEntity<String>("1",HttpStatus.OK)
 				: new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 	}
 	
 	@DeleteMapping(value = "/{cno}/{writer}", produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> commentRemove(@PathVariable("cno") long cno, @PathVariable("writer") String writer){
+	public ResponseEntity<String> commentRemove(@PathVariable("cno") long cno, @PathVariable("writer") String writer, Principal principal){
 		log.info("cno : {}",cno);
 		log.info("writer : {}",writer);
-		int isOk = csv.remove(cno);
-		return isOk > 0? new ResponseEntity<String>("1", HttpStatus.OK)
+		if (principal != null && principal.getName().equals(writer)){
+			int isOk = csv.remove(cno);
+			return isOk > 0? new ResponseEntity<String>("1", HttpStatus.OK)
 				: new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 	}
 	
 }
